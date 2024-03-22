@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  frontend:
+    container_name: frontend
+    build: .
+    ports:
+      - '80:80'
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+    stdin_open: true
+    restart: always
+    env_file:
+      - .env
