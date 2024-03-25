@@ -10,6 +10,8 @@ import { useTable } from '../../hooks/manageTableHook';
 import { tableObjects } from '../../../model/enums/tableObjects';
 import Modal from '../Modal/Modal';
 import { List, ListItem, ListItemText } from '@mui/material';
+import { useSearchParams } from 'react-router-dom';
+import { constructQueryString } from '../../utils/urls/searchParams';
 
 type TableTemplateProps<T extends MRT_RowData> = {
   data: T[];
@@ -21,6 +23,8 @@ type TableTemplateProps<T extends MRT_RowData> = {
 
 type AnyObjectType = { [key: string]: any };
 
+const onlyNumbersRegex = /^[0-9]+$/;
+
 const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
   data,
   columns,
@@ -28,11 +32,18 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
   rowsCount,
   setData,
 }) => {
+  const [searchParams] = useSearchParams();
+  const idSearchParam = searchParams.get('id') ?? '';
+
   const rowData = useRef<object | null>(null);
 
   const {
     globalFilter,
     pagination,
+    error,
+    isLoading: tableLoading,
+    clearError,
+    getData,
     handleGlobalFiltersChange,
     handlePaginationChange,
   } = useTable({ type: tableObjects.products, setData });
@@ -47,7 +58,16 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
   const closeInfoModal = () => setOpenAdditionalInfoModal(false);
 
   useEffect(() => {
-    const handler = setTimeout(() => {}, DEBOUNCE_DELAY);
+    const handler = setTimeout(() => {
+      const queryParams = {
+        id: idSearchParam,
+        page: pagination.pageIndex + 1,
+        per_page: pagination.pageSize,
+      };
+
+      const queryString = constructQueryString(queryParams);
+      getData(queryString);
+    }, DEBOUNCE_DELAY);
 
     return () => {
       clearTimeout(handler);
@@ -78,6 +98,7 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
     paginationDisplayMode: 'pages',
     layoutMode: 'grid',
     positionPagination: 'bottom',
+    globalFilterModeOptions: ['equals'],
 
     rowCount: rowsCount,
 
@@ -92,8 +113,8 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
 
     state: {
       globalFilter,
-      isLoading,
-      showProgressBars: isLoading,
+      isLoading: isLoading || tableLoading,
+      showProgressBars: isLoading || tableLoading,
       pagination,
     },
 
@@ -128,8 +149,16 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
     muiSearchTextFieldProps: () => ({
       type: 'number',
       inputProps: {
-        min: 1,
+        min: 0,
         max: rowsCount,
+      },
+      onChange: (e) => {
+        let inputValue = e.target.value;
+
+        if (!onlyNumbersRegex.test(inputValue) && inputValue !== '') return;
+        if (+inputValue === 0) inputValue = '';
+
+        handleGlobalFiltersChange(inputValue);
       },
       placeholder: 'Search by id',
     }),
@@ -158,6 +187,13 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
             ))}
           </List>
         )}
+      </Modal>
+      <Modal
+        open={!!error}
+        modalTitle="Error occured!"
+        handleClose={clearError}
+      >
+        {error}
       </Modal>
     </>
   );

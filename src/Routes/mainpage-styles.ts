@@ -3,5 +3,5 @@ import { styled } from '@mui/system';
 
 export const MainPageBoxContainer = styled(Box)({
   width: '85%',
-  margin: '0 auto',
+  margin: '5vh auto',
 });

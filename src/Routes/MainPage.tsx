@@ -6,6 +6,10 @@ import TableTemplate from '../shared/components/Table/TableTemplate';
 import { useSearchParams } from 'react-router-dom';
 import { constructQueryString } from '../shared/utils/urls/searchParams';
 import { MainPageBoxContainer } from './mainpage-styles';
+import Modal from '../shared/components/Modal/Modal';
+import { getRequestUrl } from '../shared/utils/urls/fetchUrl';
+import { tableObjects } from '../model/enums/tableObjects';
+import { DEFAULT_ROWS_PER_PAGE } from '../constants/tableConstants';
 
 const columns = [
   {
@@ -35,7 +39,7 @@ const columns = [
 const MainPage = () => {
   const [searchParams] = useSearchParams();
 
-  const { isLoading, sendRequest } = useHttpClient();
+  const { isLoading, error, clearError, sendRequest } = useHttpClient();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [rowsCount, setRowsCount] = useState<number>(0);
@@ -43,23 +47,20 @@ const MainPage = () => {
   const pageSearchParam = searchParams.get('page') ?? 0;
   const idSearchParam = searchParams.get('id') ?? '';
 
-  const getProducts = useCallback(
-    async (pageIndex?: number, pageSize?: number) => {
-      const queryParams = {
-        id: idSearchParam,
-        page: +pageSearchParam ?? pageIndex,
-        per_page: 5,
-      };
+  const getProducts = useCallback(async () => {
+    const queryParams = {
+      id: idSearchParam,
+      page: pageSearchParam,
+      per_page: DEFAULT_ROWS_PER_PAGE,
+    };
 
-      const queryString = constructQueryString(queryParams);
-      const url = `${PRODUCTS_URL}?${queryString}`;
+    const queryString = constructQueryString(queryParams);
+    const url = getRequestUrl(tableObjects.products, queryString);
 
-      const data = await sendRequest(url);
-      if (!data) return;
-      setProducts(Array.isArray(data?.data) ? data?.data : [data?.data]);
-    },
-    [idSearchParam, pageSearchParam, sendRequest],
-  );
+    const data = await sendRequest(url);
+    if (!data) return;
+    setProducts(Array.isArray(data?.data) ? data?.data : [data?.data]);
+  }, [sendRequest]);
 
   useEffect(() => {
     getProducts();
@@ -78,13 +79,22 @@ const MainPage = () => {
 
   return (
     <MainPageBoxContainer>
-      <TableTemplate
-        data={products}
-        columns={columns}
-        isLoading={isLoading}
-        rowsCount={rowsCount}
-        setData={setProducts}
-      />
+      {products.length && rowsCount && (
+        <TableTemplate
+          data={products}
+          columns={columns}
+          isLoading={isLoading}
+          rowsCount={rowsCount}
+          setData={setProducts}
+        />
+      )}
+      <Modal
+        open={!!error}
+        modalTitle="Error occured!"
+        handleClose={clearError}
+      >
+        {error}
+      </Modal>
     </MainPageBoxContainer>
   );
 };
