@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { UNKNOWN_ERROR_OCCURED } from '../../constants/errorConstants';
 
 export const useHttpClient = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +46,7 @@ export const useHttpClient = () => {
           return;
         }
 
-        setError(err.message);
+        setError(!!err.message ? err.message : UNKNOWN_ERROR_OCCURED);
         setIsLoading(false);
       }
     },
