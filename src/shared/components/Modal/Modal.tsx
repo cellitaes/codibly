@@ -15,7 +15,11 @@ type ModalType = {
 
 const Modal: FC<ModalType> = ({ children, modalTitle, open, handleClose }) => {
   return (
-    <Dialog onClose={handleClose} open={open}>
+    <Dialog
+      onClose={handleClose}
+      open={open}
+      sx={{ '& .MuiPaper-root': { minWidth: '60%', maxWidth: '70%' } }}
+    >
       <StyledDialogTitle>{modalTitle}</StyledDialogTitle>
       <StyledCloseIcon aria-label="close" onClick={handleClose}>
         <CloseIcon />
