@@ -7,7 +7,9 @@ import {
   setSearchUrlParams,
 } from '../utils/urls/searchParams';
 import { useSearchParams } from 'react-router-dom';
-import { DEFAULT_ROWS_PER_PAGE } from '../../constants/tableConstants';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { tableActions } from '../../store/slices/tableSlice';
 
 export const useTable = ({
   type,
@@ -20,10 +22,16 @@ export const useTable = ({
   const pageSearchParam = searchParams.get('page') ?? 0;
   const idSearchParam = searchParams.get('id') ?? '';
 
+  const dispatch = useDispatch();
+
+  const rowsPerPage = useSelector(
+    (store: RootState) => store.table.rowsPerPage,
+  );
+
   const [globalFilter, setGlobalFilter] = useState(idSearchParam);
   const [pagination, setPagination] = useState({
     pageIndex: +pageSearchParam - 1 ?? 0,
-    pageSize: DEFAULT_ROWS_PER_PAGE,
+    pageSize: rowsPerPage,
   });
 
   const { error, clearError, isLoading, sendRequest } = useHttpClient();
@@ -56,6 +64,7 @@ export const useTable = ({
       const { pageIndex, pageSize } = newPagination;
 
       setPagination(newPagination);
+      dispatch(tableActions.rowsPerPageChange(newPagination.pageSize));
       const newPage = !!pageIndex ? pageIndex + 1 : '';
 
       setSearchParams(setSearchUrlParams(searchParams, newPage, 'page'));

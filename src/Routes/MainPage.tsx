@@ -9,7 +9,8 @@ import { MainPageBoxContainer } from './mainpage-styles';
 import Modal from '../shared/components/Modal/Modal';
 import { getRequestUrl } from '../shared/utils/urls/fetchUrl';
 import { tableObjects } from '../model/enums/tableObjects';
-import { DEFAULT_ROWS_PER_PAGE } from '../constants/tableConstants';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const columns = [
   {
@@ -37,6 +38,10 @@ const columns = [
 ];
 
 const MainPage = () => {
+  const rowsPerPage = useSelector(
+    (store: RootState) => store.table.rowsPerPage,
+  );
+
   const [searchParams] = useSearchParams();
 
   const { isLoading, error, clearError, sendRequest } = useHttpClient();
@@ -51,7 +56,7 @@ const MainPage = () => {
     const queryParams = {
       id: idSearchParam,
       page: pageSearchParam,
-      per_page: DEFAULT_ROWS_PER_PAGE,
+      per_page: rowsPerPage,
     };
 
     const queryString = constructQueryString(queryParams);
