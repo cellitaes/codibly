@@ -21,7 +21,7 @@ export const useTable = ({
   setData: (data: any[]) => void;
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const pageSearchParam = searchParams.get('page') ?? 0;
+  const pageSearchParam = searchParams.get('page') ?? 1;
   const idSearchParam = searchParams.get('id') ?? '';
 
   const dispatch = useDispatch();

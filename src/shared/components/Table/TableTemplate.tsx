@@ -9,7 +9,7 @@ import { DEBOUNCE_DELAY } from '../../../constants/tableConstants';
 import { useTable } from '../../hooks/manageTableHook';
 import { tableObjects } from '../../../model/enums/tableObjects';
 import Modal from '../Modal/Modal';
-import { List, ListItem, ListItemText } from '@mui/material';
+import { List, ListItem, ListItemText, Typography } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import { constructQueryString } from '../../utils/urls/searchParams';
 
@@ -140,6 +140,7 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
 
     muiTableBodyRowProps: ({ row }) => ({
       onClick: () => openInfoModal(row),
+      'data-cy': 'table-row',
       sx: {
         backgroundColor: row?.original?.color,
       },
@@ -150,6 +151,7 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
       inputProps: {
         min: 0,
         max: rowsCount,
+        'data-cy': 'global-search',
       },
       onChange: handleGlobalSearchChange,
       placeholder: 'Search by id',
@@ -167,7 +169,15 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
         {rowData.current && (
           <List>
             {Object.entries(rowData.current).map(([key, value]) => (
-              <ListItem key={key} disableGutters secondaryAction={`${value}`}>
+              <ListItem
+                key={key}
+                disableGutters
+                secondaryAction={
+                  <Typography data-cy={`${key}-secondary-action`}>
+                    {value}
+                  </Typography>
+                }
+              >
                 <ListItemText
                   primary={`${key
                     .toString()

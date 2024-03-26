@@ -5,7 +5,7 @@ import { PRODUCTS_URL } from '../config';
 import TableTemplate from '../shared/components/Table/TableTemplate';
 import { useSearchParams } from 'react-router-dom';
 import { constructQueryString } from '../shared/utils/urls/searchParams';
-import { MainPageBoxContainer } from './mainpage-styles';
+import { CenterTextBox, MainPageBoxContainer } from './mainpage-styles';
 import Modal from '../shared/components/Modal/Modal';
 import { getRequestUrl } from '../shared/utils/urls/fetchUrl';
 import { tableObjects } from '../model/enums/tableObjects';
@@ -84,7 +84,7 @@ const MainPage = () => {
 
   return (
     <MainPageBoxContainer>
-      {products.length && rowsCount && (
+      {products.length && rowsCount ? (
         <TableTemplate
           data={products}
           columns={columns}
@@ -92,6 +92,8 @@ const MainPage = () => {
           rowsCount={rowsCount}
           setData={setProducts}
         />
+      ) : (
+        <CenterTextBox>No Data</CenterTextBox>
       )}
       <Modal
         open={!!error}

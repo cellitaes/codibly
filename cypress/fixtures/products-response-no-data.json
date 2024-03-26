@@ -1,0 +1,11 @@
+{
+  "page": 1,
+  "per_page": 5,
+  "total": 0,
+  "total_pages": 0,
+  "data": [],
+  "support": {
+    "url": "https://reqres.in/#support-heading",
+    "text": "To keep ReqRes free, contributions towards server costs are appreciated!"
+  }
+}

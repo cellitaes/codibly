@@ -19,14 +19,24 @@ const Modal: FC<ModalType> = ({ children, modalTitle, open, handleClose }) => {
       onClose={handleClose}
       open={open}
       sx={{ '& .MuiPaper-root': { minWidth: '60%', maxWidth: '70%' } }}
+      data-cy="modal"
+      slotProps={{
+        backdrop: {
+          'data-cy': 'modal-backdrop',
+        } as any,
+      }}
     >
       <StyledDialogTitle>{modalTitle}</StyledDialogTitle>
-      <StyledCloseIcon aria-label="close" onClick={handleClose}>
+      <StyledCloseIcon
+        aria-label="close"
+        onClick={handleClose}
+        data-cy="close-modal-icon"
+      >
         <CloseIcon />
       </StyledCloseIcon>
       <DialogContent dividers>{children}</DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={handleClose}>
+        <Button autoFocus onClick={handleClose} data-cy="confirm-modal-btn">
           Ok
         </Button>
       </DialogActions>
