@@ -16,7 +16,7 @@ npm install
 
 npm run start
 
-5. Open your browser and visit `http://localhost:5173` to view the app.
+5. Open your browser and visit `http://localhost` to view the app.
 
 ## Available Scripts
 
