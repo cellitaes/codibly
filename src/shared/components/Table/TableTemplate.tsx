@@ -160,7 +160,7 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
 
   return (
     <>
-      <MaterialReactTable table={table} />;
+      <MaterialReactTable table={table} />
       <Modal
         modalTitle="Additional Data Info"
         open={openAdditionalInfoModal}
