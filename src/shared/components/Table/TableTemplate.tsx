@@ -23,8 +23,6 @@ type TableTemplateProps<T extends MRT_RowData> = {
 
 type AnyObjectType = { [key: string]: any };
 
-const onlyNumbersRegex = /^[0-9]+$/;
-
 const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
   data,
   columns,
@@ -46,6 +44,7 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
     getData,
     handleGlobalFiltersChange,
     handlePaginationChange,
+    handleGlobalSearchChange,
   } = useTable({ type: tableObjects.products, setData });
 
   const [openAdditionalInfoModal, setOpenAdditionalInfoModal] = useState(false);
@@ -152,14 +151,7 @@ const TableTemplate: FC<TableTemplateProps<AnyObjectType>> = ({
         min: 0,
         max: rowsCount,
       },
-      onChange: (e) => {
-        let inputValue = e.target.value;
-
-        if (!onlyNumbersRegex.test(inputValue) && inputValue !== '') return;
-        if (+inputValue === 0) inputValue = '';
-
-        handleGlobalFiltersChange(inputValue);
-      },
+      onChange: handleGlobalSearchChange,
       placeholder: 'Search by id',
     }),
   });

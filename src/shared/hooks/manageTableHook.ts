@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { tableObjects } from '../../model/enums/tableObjects';
 import { useHttpClient } from './httpHook';
 import { getRequestUrl } from '../utils/urls/fetchUrl';
@@ -10,6 +10,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { tableActions } from '../../store/slices/tableSlice';
+
+const onlyNumbersRegex = /^[0-9]+$/;
 
 export const useTable = ({
   type,
@@ -80,6 +82,17 @@ export const useTable = ({
     [pagination, searchParams, idSearchParam, getData, setSearchParams],
   );
 
+  const handleGlobalSearchChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    let inputValue = e.target.value;
+
+    if (!onlyNumbersRegex.test(inputValue) && inputValue !== '') return;
+    if (+inputValue === 0) inputValue = '';
+
+    handleGlobalFiltersChange(inputValue);
+  };
+
   return {
     globalFilter,
     pagination,
@@ -89,5 +102,6 @@ export const useTable = ({
     getData,
     handleGlobalFiltersChange,
     handlePaginationChange,
+    handleGlobalSearchChange,
   };
 };

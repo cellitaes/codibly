@@ -5,6 +5,14 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
     plugins: [react()],
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      transformMode: {
+        '/\\.[jt]sx?$': 'ts-jest',
+      },
+      setupFiles: ['./setup-test-env.ts'],
+    },
     server: {
       watch: {
         usePolling: true,

@@ -5,8 +5,8 @@ export const setSearchUrlParams = (
 ): URLSearchParams => {
   const newSearchParams = new URLSearchParams(searchParams);
 
-  if (value) {
-    newSearchParams.set(paramKey, `${value}`);
+  if (!!value) {
+    newSearchParams.set(paramKey, String(value));
   } else {
     newSearchParams.delete(paramKey);
   }
@@ -15,6 +15,8 @@ export const setSearchUrlParams = (
 };
 
 export const constructQueryString = (params: any) => {
+  if (typeof params !== 'object' || params === null) return '';
+
   return Object.entries(params)
     .filter(
       ([_, value]: [string, any]) => value !== null && value !== undefined,
