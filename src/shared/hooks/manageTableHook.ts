@@ -32,7 +32,7 @@ export const useTable = ({
 
   const [globalFilter, setGlobalFilter] = useState(idSearchParam);
   const [pagination, setPagination] = useState({
-    pageIndex: +pageSearchParam - 1 ?? 0,
+    pageIndex: isNaN(+pageSearchParam) ? 0 : +pageSearchParam - 1,
     pageSize: rowsPerPage,
   });
 
