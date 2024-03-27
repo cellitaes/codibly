@@ -4,7 +4,7 @@ import MainPage from './Routes/MainPage';
 
 const Routes = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={'/codibly/'}>
       <>
         <AppRoutes>
           <Route path="/" element={<MainPage />} />
